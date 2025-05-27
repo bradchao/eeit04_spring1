@@ -1,6 +1,8 @@
 package com.example.demo;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,5 +38,25 @@ public class Brad04 {
 		
 		return null;
 	}
+	@RequestMapping("/m3")	
+	public String m3(@RequestBody User user) {
+		System.out.println(user.getName());
+		System.out.println(user.getGender());
+		System.out.println(user.getAge());
+		return null;
+	}
+	@RequestMapping("/m4/{id}/{name}")
+	public String m4(@PathVariable Integer id, 
+			@PathVariable String name) {
+		System.out.printf("%d: %s\n", id, name);
+		return null;
+	}
+	@RequestMapping("/m5")
+	public String m5(@RequestHeader String x, @RequestHeader Integer y,
+				@RequestHeader(name = "Content-Type") String content) {
+		System.out.printf("%s : %d : %s\n", x, y, content);
+		return null;
+	}
+	
 	
 }
