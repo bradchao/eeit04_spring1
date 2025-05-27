@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,7 +62,26 @@ public class Brad07 {
 		return response;
 	}
 	
-	
+	@PutMapping("/member/{id}")
+	public Response update(@PathVariable Integer id, @RequestBody Member member) {
+		String sql = "UPDATE member " + 
+					"SET account = :account,realname = :realname " + 
+					"WHERE id = :id";
+		Map<String,Object> data = new HashMap<>();
+		data.put("account", member.getAccount());
+		data.put("realname", member.getRealname());
+		data.put("id", id);
+		int n = template.update(sql, data);
+		if (n > 0) {
+			response.setError(0);
+			response.setMesg("OK");
+		}else {
+			response.setError(1);
+			response.setMesg("NO DELETE");
+		}
+		
+		return response;
+	}
 	
 	
 }
