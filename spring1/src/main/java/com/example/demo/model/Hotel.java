@@ -16,13 +16,13 @@ public class Hotel {
 	@JsonProperty("Tel")
 	private String tel;
 
-	private int errorCode;
+	private Integer errorCode;
 	
-	public int getErrorCode() {
+	public Integer getErrorCode() {
 		return errorCode;
 	}
 
-	public void setErrorCode(int errorCode) {
+	public void setErrorCode(Integer errorCode) {
 		this.errorCode = errorCode;
 	}
 
