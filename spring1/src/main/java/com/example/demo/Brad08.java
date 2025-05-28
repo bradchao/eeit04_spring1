@@ -1,14 +1,15 @@
 package com.example.demo;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,6 +64,41 @@ public class Brad08 {
 			response.setError(-1);
 			response.setMesg("XX");
 			response.setInsertId(-1);
+		}
+		
+		
+		return response;
+	}
+	
+	@PostMapping("/members")
+	public Response test2(@RequestBody List<Member> members) {
+		String sql = "INSERT INTO member " + 
+				"(account,passwd,realname) " + 
+				"VALUES (:account, :passwd, :realname)";
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		MapSqlParameterSource[] params = 
+			new MapSqlParameterSource[members.size()];
+		for (int i=0; i<members.size(); i++) {
+			Member member = members.get(i);
+			params[i] = new MapSqlParameterSource();
+			params[i].addValue("account", member.getAccount());
+			params[i].addValue("passwd", BCrypt.hashpw(
+					member.getPasswd(), BCrypt.gensalt()));
+			params[i].addValue("realname", member.getRealname());				
+		}
+		
+		int[] ns = template.batchUpdate(sql, params, keyHolder);
+		List<Map<String,Object>> ids = keyHolder.getKeyList();
+		
+//		Map<String,Object> temp = ids.get(0);
+//		Set<String> keys = temp.keySet();
+//		for (String key : keys) {
+//			System.out.println(key + ":" + temp.get(key));
+//		}
+		
+		
+		for (Map<String,Object> id : ids) {
+			System.out.println(id.get("GENERATED_KEY"));
 		}
 		
 		
