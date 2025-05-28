@@ -1,10 +1,13 @@
 package com.example.demo;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,6 +30,20 @@ public class Brad10 {
 		return jdbc.query(sql, hotelRowMapper);
 	}
 	
-	
+	@GetMapping("/hotel/{id}")
+	public Hotel test2(@PathVariable Long id) {
+		String sql = "SELECT id, name, addr, tel FROM hotel " + 
+					"WHERE id = :id";
+		Map<String, Long> params = new HashMap<>();
+		params.put("id", id);
+		List<Hotel> hotels = jdbc.query(sql, params, hotelRowMapper);
+		if (hotels.size() > 0) {
+			return hotels.get(0);
+		}else {
+			Hotel hotel = new Hotel();
+			hotel.setErrorCode(-1);
+			return hotel;
+		}
+	}
 	
 }
