@@ -46,4 +46,34 @@ public class Brad10 {
 		}
 	}
 	
+	@GetMapping("/hotelV2/{id}")
+	public Hotel test3(@PathVariable Long id) {
+		String sql = "SELECT id, name, addr, tel FROM hotel " + 
+					"WHERE id = :id";
+		Map<String, Long> params = new HashMap<>();
+		params.put("id", id);
+
+		Hotel hotel;
+		try {
+			hotel = jdbc.queryForObject(sql, params, hotelRowMapper);
+		}catch(Exception e) {
+			hotel = new Hotel();
+			hotel.setErrorCode(-1);			
+		}
+		
+		return hotel;
+	}	
+	
+	@GetMapping("/hotels/search/{key}")
+	public List<Hotel> test3(@PathVariable String key) {
+		String sql = "SELECT id, name, addr, tel FROM hotel " + 
+				"WHERE name LIKE :skey OR addr LIKE :skey OR tel LIKE :skey";
+		String skey = "%" + key + "%";
+		Map<String, String> params = new HashMap<>();
+		params.put("skey", skey);
+		
+		return jdbc.query(sql, params, hotelRowMapper);
+	}
+	
+	
 }
