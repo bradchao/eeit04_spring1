@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,8 +25,15 @@ import com.example.demo.model.OrderDetail;
 public class Brad11 {
 
     private final OrderDetail orderDetail;
-	@Autowired
-	private NamedParameterJdbcTemplate jdbc;
+    
+//	@Autowired
+//	private NamedParameterJdbcTemplate jdbc;
+    
+    @Autowired
+    @Qualifier("northJdbcTemplete")
+    private NamedParameterJdbcTemplate jdbc;
+    
+    
 	
 	@Autowired
 	private OrderDetailRowMapper mapper;
