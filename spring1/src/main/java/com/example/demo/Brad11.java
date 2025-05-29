@@ -55,6 +55,7 @@ public class Brad11 {
 		
 		return jdbc.query(sql, params, mapper);
 	}
+	
 	@GetMapping(value = {"/orders", "/orders/{orderId}"})
 	public List<Order> test2(@PathVariable(required = false) Integer orderId){
 		String sql = "SELECT o.OrderID id, o.OrderDate odate, p.ProductName pname, "
@@ -63,32 +64,38 @@ public class Brad11 {
 				+ "		JOIN orderdetails od ON o.OrderID = od.OrderID"
 				+ "		JOIN products p ON od.ProductID = p.ProductID";
 		
-				Map<String,Object> params = new HashMap<>();
-				if (orderId != null) {
-					sql += "		WHERE o.OrderID = :orderId";
-					params.put("orderId", orderId);
-				}
-				HashMap<Integer, Order> orders = new HashMap<>();
+		Map<String,Object> params = new HashMap<>();
+		if (orderId != null) {
+			sql += "		WHERE o.OrderID = :orderId";
+			params.put("orderId", orderId);
+		}
+		List<Map<String,Object>> orderMap = jdbc.queryForList(sql, params);
+
+		//-------------------------
+		// 以陣列為 root, 輸出用的
+		HashMap<Integer, Order> orders = new HashMap<>();
+		
+		for (Map<String,Object> row: orderMap) {
+			int oid = (Integer)row.get("id");
+			
+			Order order = orders.get(oid);
+			if (order == null) {
+				order = new Order();
+				order.setOrderId(oid);
+				LocalDateTime odate = (LocalDateTime)row.get("odate");
+				order.setOrderDate(odate.toString());
 				
-				List<Map<String,Object>> orderMap = jdbc.queryForList(sql, params);
-				for (Map<String,Object> row: orderMap) {
-					int oid = (Integer)row.get("id");
-					
-					Order order = orders.get(oid);
-					if (order == null) {
-						order = new Order();
-						order.setOrderId(oid);
-						LocalDateTime odate = (LocalDateTime)row.get("odate");
-						order.setOrderDate(odate.toString());
-					}
-					
-					OrderDetail detail = new OrderDetail();
-					detail.setUnitPrice(((BigDecimal)row.get("price")).doubleValue());
-					detail.setProductName((String)row.get("pname"));
-					detail.setQty((Integer)row.get("qty"));
-					
-					order.getOrderDetails().add(detail);
-				}
+				orders.put(oid, order);
+			}
+			
+			OrderDetail detail = new OrderDetail();
+			detail.setOrderId(oid);
+			detail.setUnitPrice(((BigDecimal)row.get("price")).doubleValue());
+			detail.setProductName((String)row.get("pname"));
+			detail.setQty((Integer)row.get("qty"));
+			
+			order.getOrderDetails().add(detail);
+		}
 		
 		
 		

@@ -13,13 +13,11 @@ import com.example.demo.model.OrderDetail;
 public class OrderDetailRowMapper 
 	implements RowMapper<OrderDetail> {
 
-//	@Autowired
-//	private OrderDetail orderDetail;
-	
 	@Override
 	public OrderDetail mapRow(ResultSet rs, int rowNum) 
 			throws SQLException {
 		OrderDetail orderDetail = new OrderDetail();
+		
 		orderDetail.setOrderId(rs.getInt("id"));
 		orderDetail.setProductName(rs.getString("pname"));
 		orderDetail.setQty(rs.getInt("qty"));
